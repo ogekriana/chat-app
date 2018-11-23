@@ -14,6 +14,11 @@ app.use(express.static(publicPath))
 io.on('connection', (socket) => {
 	console.log(`new user connected`)
 
+	socket.emit("newEmail", {
+		from: 'ogek.riana@gmail.com',
+		content: 'hello what is going on?',
+		createdAt: 123
+	})
 	socket.on('disconnect', () => {
 		console.log(`user was disconnected`)		
 	})
