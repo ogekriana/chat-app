@@ -12,17 +12,26 @@ var io = socketIO(server)
 app.use(express.static(publicPath))
 
 io.on('connection', (socket) => {
-	console.log(`new user connected`)
-
 	socket.emit("newMessage", {
-		from: 'ogek.riana@gmail.com',
-		content: 'hello what is going on?',
-		createdAt: 123
+		from: 'Admin',
+		text: 'Welcome to the chat app'
+	})
+
+	socket.broadcast.emit('newMessage', {
+		from: 'Admin',
+		text: 'New user joined to the app',
+		createdAt: new Date().getTime()
 	})
 
 	socket.on('createMessage', (message) => {
-		console.log("message", message)
-		io.emit('newMessage', {
+		// io.emit('newMessage', {
+		// 	from: message.from,
+		// 	text: message.text,
+		// 	createdAt: new Date().getTime()
+		// })
+
+		// broadcast message except to the user who send the message
+		socket.broadcast.emit('newMessage', {
 			from: message.from,
 			text: message.text,
 			createdAt: new Date().getTime()
