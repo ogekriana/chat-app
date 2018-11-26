@@ -14,11 +14,22 @@ socket.on('disconnect', function() {
 })
 
 socket.on('newMessage', function(newMessage) {
-	console.log("newMessage", newMessage)
-	var li = jQuery("<li></li>")
+	//*** using ,ustache template
 	var formattedTime = moment(newMessage.createdAt).format('h:mm a')
-	li.text(`${newMessage.from} (${formattedTime}): ${newMessage.text}`)
-	jQuery("#messages").append(li)
+	var template = jQuery("#message-template").html()
+	var html = Mustache.render(template, {
+		text: newMessage.text,
+		from: newMessage.from,
+		createdAt: formattedTime
+	})
+	jQuery('#messages').append(html)
+
+	//*** using basic jquery
+	// console.log("newMessage", newMessage)
+	// var li = jQuery("<li></li>")
+	// var formattedTime = moment(newMessage.createdAt).format('h:mm a')
+	// li.text(`${newMessage.from} (${formattedTime}): ${newMessage.text}`)
+	// jQuery("#messages").append(li)
 })
 
 // socket.emit("createMessage", {
