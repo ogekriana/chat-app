@@ -23,6 +23,10 @@ socket.on('disconnect', function() {
 	console.log("disconnected from server")
 })
 
+socket.on('updateUserList', function(users) {
+	console.log("user list", users)
+})
+
 function scrollToBottom(){
 	// selector
 	var messages = jQuery("#messages")
