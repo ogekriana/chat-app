@@ -10,6 +10,7 @@ var server = http.createServer(app)
 var io = socketIO(server)
 
 const { generateMessage } = require('./utils/message')
+const { isRealString } = require('./utils/validation')
 
 app.use(express.static(publicPath))
 
@@ -18,6 +19,12 @@ io.on('connection', (socket) => {
 
 	socket.emit("newMessage", generateMessage('Admin', 'Welcome to the chat app'))
 	socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined to the app'))
+
+	socket.on('join', (params, callback) => {
+		if(!isRealString(params.name) || !isRealString(params.room))
+			callback('name and room are required')
+		callback()
+	})
 
 	socket.on('createMessage', (message, callback) => {
 		// broadcast message except to the user who send the message
