@@ -14,18 +14,18 @@ const { generateMessage } = require('./utils/message')
 app.use(express.static(publicPath))
 
 io.on('connection', (socket) => {
+	// inside here response to the event on the browser
+
 	socket.emit("newMessage", generateMessage('Admin', 'Welcome to the chat app'))
 	socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined to the app'))
 
-	socket.on('createMessage', (message) => {
-		// io.emit('newMessage', {
-		// 	from: message.from,
-		// 	text: message.text,
-		// 	createdAt: new Date().getTime()
-		// })
-
+	socket.on('createMessage', (message, callback) => {
 		// broadcast message except to the user who send the message
-		socket.broadcast.emit('newMessage', generateMessage(message.from, message.text))
+		// socket.broadcast.emit('newMessage', generateMessage(message.from, message.text)) // show on the all client exclude the sender
+		// socket.emit('newMessage', generateMessage(message.from, message.text)) // show on the sender only
+		io.emit('newMessage', generateMessage(message.from, message.text)) // show on the all client
+		console.log(message)
+		callback(message)
 	})
 
 	socket.on('disconnect', () => {
