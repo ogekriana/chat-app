@@ -31,7 +31,7 @@ io.on('connection', (socket) => {
 		io.to(params.room).emit('updateUserList', users.getUserList(params.room))
 
 		// NOTE
-		// io.emit ==> io.to('room name') // show to all the user on the socket
+		// io.emit ==> io.to('room name').emit // show to all the user on the socket
 		// socket.broadcast.emit ==> socket.broadcast.to('room name').emit // show to all the user on the socket except the current user
 		// socket.emit // show to the current user only
 		socket.emit("newMessage", generateMessage('Admin', 'Welcome to the chat app'))
@@ -44,7 +44,12 @@ io.on('connection', (socket) => {
 		// broadcast message except to the user who send the message
 		// socket.broadcast.emit('newMessage', generateMessage(message.from, message.text)) // show on the all client exclude the sender
 		// socket.emit('newMessage', generateMessage(message.from, message.text)) // show on the sender only
-		io.emit('newMessage', generateMessage(message.from, message.text)) // show on the all client
+		// io.emit('newMessage', generateMessage(message.from, message.text)) // show on the all client
+
+		let user = users.getUser(socket.id)
+		if(user && isRealString(message.text)){
+			io.to(user.room).emit('newMessage', generateMessage(user.name, message.text))
+		}
 		callback(message)
 	})
 
