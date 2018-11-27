@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
 		// socket.broadcast.emit ==> socket.broadcast.to('room name').emit // show to all the user on the socket except the current user
 		// socket.emit // show to the current user only
 		socket.emit("newMessage", generateMessage('Admin', 'Welcome to the chat app'))
-		socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} joined to the app`))
+		socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} joined to the chat`))
 
 		callback()
 	})
@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
 		let user = users.removeUser(socket.id)
 		if(user){
 			io.to(user.room).emit('updateUserList', users.getUserList(user.room))
-			io.to(user.room).emit('Admin', `${user.name} has left`)
+			io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left`))
 		}
 	})
 })

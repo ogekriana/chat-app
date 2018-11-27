@@ -25,6 +25,12 @@ socket.on('disconnect', function() {
 
 socket.on('updateUserList', function(users) {
 	console.log("user list", users)
+	let ol = jQuery('<ol></ol>')
+	users.forEach((user) => {
+		ol.append(jQuery('<li></li>').text(user))
+	})
+
+	jQuery('#users').html(ol)
 })
 
 function scrollToBottom(){
