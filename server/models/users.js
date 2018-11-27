@@ -27,6 +27,10 @@ class Users {
 						.map((user) => user.name)
 		return users
 	}
+
+	isUserExistInRoom(name, room){
+		return this.users.some((user) => user.name === name && user.room === room)
+	}
 }
 
 module.exports = { Users }

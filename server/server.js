@@ -19,24 +19,33 @@ app.use(express.static(publicPath))
 
 io.on('connection', (socket) => {
 	// inside here response to the event on the browser
-
 	socket.on('join', (params, callback) => {
 		if(!isRealString(params.name) || !isRealString(params.room))
 			callback('name and room are required')
 
-		socket.join(params.room)
-		users.removeUser(socket.id)
-		users.addUser(socket.id, params.name, params.room)
+		// 	socket.join(params.room)
+		// 	users.removeUser(socket.id)
+		// 	users.addUser(socket.id, params.name, params.room)
 
-		io.to(params.room).emit('updateUserList', users.getUserList(params.room))
+		// 	io.to(params.room).emit('updateUserList', users.getUserList(params.room))
+		// 	socket.emit("newMessage", generateMessage('Admin', 'Welcome to the chat app'))
+		// 	socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} joined to the chat`))
+		// 	callback()
 
 		// NOTE
 		// io.emit ==> io.to('room name').emit // show to all the user on the socket
 		// socket.broadcast.emit ==> socket.broadcast.to('room name').emit // show to all the user on the socket except the current user
 		// socket.emit // show to the current user only
-		socket.emit("newMessage", generateMessage('Admin', 'Welcome to the chat app'))
-		socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} joined to the chat`))
 
+		socket.join(params.room)
+		if(!users.isUserExistInRoom(params.name, params.room)){
+			users.removeUser(socket.id)
+			users.addUser(socket.id, params.name, params.room)
+
+			socket.emit("newMessage", generateMessage('Admin', 'Welcome to the chat app'))
+			socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} joined to the chat`))
+		}
+		io.to(params.room).emit('updateUserList', users.getUserList(params.room))
 		callback()
 	})
 

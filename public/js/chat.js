@@ -1,11 +1,15 @@
 var socket = io();
 
 socket.on('connect', function() {
-	console.log("connected to server")
-	var params = jQuery.deparam(window.location.search);
+	let params = jQuery.deparam(window.location.search);
+	// convert params to lowercase
+	let lowerCaseParams = {
+		name: params.name.toLowerCase(),
+		room: params.room.toLowerCase()
+	}
 
-	socket.emit('join', params, function (err) {
-		if(err){
+	socket.emit('join', lowerCaseParams, function (err) {
+		if(err && err !== 'user already exist!'){
 			alert(err);
 			window.location.href = '/'
 		}else{
